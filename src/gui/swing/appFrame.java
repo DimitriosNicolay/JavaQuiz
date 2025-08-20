@@ -1,4 +1,10 @@
-package GUI.Swing;
+package gui.swing;
+
+import gui.swing.components.navBar;
+import gui.swing.panel.questionPanel;
+import gui.swing.panel.quizPanel;
+import gui.swing.panel.statsPanel;
+import gui.swing.panel.topicPanel;
 
 import javax.swing.*;
 import java.awt.*;
