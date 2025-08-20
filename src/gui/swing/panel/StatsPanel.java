@@ -2,5 +2,5 @@ package gui.swing.panel;
 
 import javax.swing.*;
 
-public class statsPanel extends JPanel {
+public class StatsPanel extends JPanel {
 }

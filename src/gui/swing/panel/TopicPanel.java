@@ -9,7 +9,7 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 
-public class topicPanel extends JPanel {
+public class TopicPanel extends JPanel {
     private JList<String> topicList;
     private DefaultListModel<String> listModel;
     private JButton deleteButton;
@@ -18,7 +18,7 @@ public class topicPanel extends JPanel {
     private JTextField titleField;
     private JTextArea descriptionArea;
 
-    public topicPanel() {
+    public TopicPanel() {
         setLayout(new BorderLayout());
         UIStyleUtil.stylePanel(this);
         setBorder(new EmptyBorder(10, 10, 10, 10));

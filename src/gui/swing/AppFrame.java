@@ -1,28 +1,28 @@
 package gui.swing;
 
-import gui.swing.components.navBar;
-import gui.swing.panel.questionPanel;
-import gui.swing.panel.quizPanel;
-import gui.swing.panel.statsPanel;
-import gui.swing.panel.topicPanel;
+import gui.swing.components.NavBar;
+import gui.swing.panel.QuestionPanel;
+import gui.swing.panel.QuizPanel;
+import gui.swing.panel.StatsPanel;
+import gui.swing.panel.TopicPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class appFrame extends JFrame {
+public class AppFrame extends JFrame {
 
     // Components of the main application frame
-    private navBar navigationBar;
+    private NavBar navigationBar;
     private JPanel mainPanel;
     private CardLayout cardLayout;
-    private topicPanel topicPanel;
-    private questionPanel questionPanel;
-    private quizPanel quizPanel;
-    private statsPanel statsPanel;
+    private TopicPanel topicPanel;
+    private QuestionPanel questionPanel;
+    private QuizPanel quizPanel;
+    private StatsPanel statsPanel;
 
 
 
-    public appFrame() throws HeadlessException {
+    public AppFrame() throws HeadlessException {
 
         // Set up the main application frame
         setTitle("Quiz");
@@ -33,23 +33,23 @@ public class appFrame extends JFrame {
         // Implement components
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
-        navigationBar = new navBar();
+        navigationBar = new NavBar();
 
         // Adding and Alignment of components
         add(navigationBar, BorderLayout.NORTH);
         add(mainPanel, BorderLayout.CENTER);
 
         // implement panels
-        topicPanel = new topicPanel();
-        questionPanel = new questionPanel();
-        quizPanel = new quizPanel();
-        statsPanel = new statsPanel();
+        topicPanel = new TopicPanel();
+        questionPanel = new QuestionPanel();
+        quizPanel = new QuizPanel();
+        statsPanel = new StatsPanel();
 
         // Add panels to mainPanel
-        mainPanel.add(new topicPanel(), "topics");
-        mainPanel.add(new questionPanel(), "questions");
-        mainPanel.add(new quizPanel(), "quiz");
-        mainPanel.add(new statsPanel(), "stats");
+        mainPanel.add(new TopicPanel(), "topics");
+        mainPanel.add(new QuestionPanel(), "questions");
+        mainPanel.add(new QuizPanel(), "quiz");
+        mainPanel.add(new StatsPanel(), "stats");
 
         add(mainPanel, BorderLayout.CENTER);
 
@@ -58,7 +58,7 @@ public class appFrame extends JFrame {
     }
 
 public static void main(String[] args) throws HeadlessException {
-SwingUtilities.invokeLater(() -> new appFrame().setVisible(true));
+SwingUtilities.invokeLater(() -> new AppFrame().setVisible(true));
 }
 }
 

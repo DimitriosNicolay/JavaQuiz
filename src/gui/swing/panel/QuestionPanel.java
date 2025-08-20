@@ -6,12 +6,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class questionPanel extends JPanel{
+public class QuestionPanel extends JPanel{
     private JList<String> questionList;
     private DefaultListModel<String> listModel;
 
 
-    public questionPanel() {
+    public QuestionPanel() {
         setLayout(new BorderLayout());
         UIStyleUtil.stylePanel(this);
         setBorder(new EmptyBorder(10, 10, 10, 10));

@@ -3,13 +3,13 @@ package gui.swing.components;
 import javax.swing.*;
 import java.awt.*;
 
-public class navBar extends JPanel {
+public class NavBar extends JPanel {
     private JButton topicsBtn;
     private JButton questionBtn;
     private JButton quizBtn;
     private JButton statsBtn;
 
-    public navBar() {
+    public NavBar() {
         setLayout(new FlowLayout(FlowLayout.LEFT));
         setBackground(new Color(51, 51, 51));
         initializeButtons();
