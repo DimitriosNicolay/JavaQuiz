@@ -38,6 +38,13 @@ public class navBar extends JPanel {
         }
     }
 
+    public void addNavigationActions(CardLayout cardLayout, JPanel mainPanel) {
+        getTopicsBtn().addActionListener(e -> cardLayout.show(mainPanel, "topics"));
+        getQuestionBtn().addActionListener(e -> cardLayout.show(mainPanel, "questions"));
+        getQuizBtn().addActionListener(e -> cardLayout.show(mainPanel, "quiz"));
+        getStatsBtn().addActionListener(e -> cardLayout.show(mainPanel, "stats"));
+    }
+
     // Getters for buttons to add action listeners later
     public JButton getTopicsBtn() { return topicsBtn; }
     public JButton getQuestionBtn() { return questionBtn; }

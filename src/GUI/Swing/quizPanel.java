@@ -1,4 +1,6 @@
 package GUI.Swing;
 
-public class quizPanel {
+import javax.swing.*;
+
+public class quizPanel extends JPanel {
 }
