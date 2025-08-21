@@ -1,4 +1,4 @@
-package GUI.Swing;
+package gui.swing.subpanel;
 
 import gui.swing.UIStyleUtil;
 
@@ -61,5 +61,10 @@ public class QuestionDescriptionPanel extends JPanel {
 
     public void setQuestionText(String questionText) {
         questionTextArea.setText(questionText);
+    }
+
+    public void setEditable(boolean editable) {
+        questionNameField.setEditable(editable);
+        questionTextArea.setEditable(editable);
     }
 }

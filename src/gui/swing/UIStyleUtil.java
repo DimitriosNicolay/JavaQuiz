@@ -11,6 +11,8 @@ public class UIStyleUtil {
     public static final Color BACKGROUND_COLOR = new Color(45, 45, 45);  // Dark background
     public static final Color COMPONENT_COLOR = new Color(60, 60, 60);   // Slightly lighter for components
     public static final Color TEXT_COLOR = new Color(200, 200, 200);     // Light gray text
+    public static final Color GREEN_COLOR = new Color(76, 175, 80);  // A pleasant green
+    public static final Color RED_COLOR = new Color(244, 67, 54);    // A strong red
 
     // Applies standard button styling with neutral colors
     public static void styleButton(JButton button) {
@@ -25,13 +27,13 @@ public class UIStyleUtil {
     // Styles a button with red background
     public static void styleRedButton(JButton button) {
         styleButton(button);
-        button.setBackground(new Color(150, 50, 50));  // Red background
+        button.setBackground(RED_COLOR);  // Red background
     }
 
     // Styles a button with green background
     public static void styleGreenButton(JButton button) {
         styleButton(button);
-        button.setBackground(new Color(50, 150, 50));  // Green background
+        button.setBackground(GREEN_COLOR);  // Green background
     }
 
     // Styles a text field with a titled border and dark theme colors
