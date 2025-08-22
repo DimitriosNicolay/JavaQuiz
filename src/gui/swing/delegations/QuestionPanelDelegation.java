@@ -1,65 +1,31 @@
 package gui.swing.delegations;
 
 import gui.swing.panel.QuestionPanel;
-import gui.swing.subpanel.QuestionDescriptionPanel;
-import gui.swing.subpanel.AnswersPanel;
 
 import java.util.List;
 
-public class QuestionPanelDelegation {
+public interface QuestionPanelDelegation {
+    String getTopicName();
 
-    private final QuestionPanel questionPanel;
+    void setTopicName(String topicName);
 
-    public QuestionPanelDelegation(QuestionPanel questionPanel) {
-        this.questionPanel = questionPanel;
-    }
+    String getQuestionName();
 
-    public String getTopicName() {
-        return questionPanel.getQuestionDescriptionPanel().getTopicName();
-    }
+    void setQuestionName(String questionName);
 
-    public void setTopicName(String topicName) {
-        questionPanel.getQuestionDescriptionPanel().setTopicName(topicName);
-    }
+    String getQuestionText();
 
-    public String getQuestionName() {
-        return questionPanel.getQuestionDescriptionPanel().getQuestionName();
-    }
+    void setQuestionText(String questionText);
 
-    public void setQuestionName(String questionName) {
-        questionPanel.getQuestionDescriptionPanel().setQuestionName(questionName);
-    }
+    List<String> getAnswerTexts();
 
-    public String getQuestionText() {
-        return questionPanel.getQuestionDescriptionPanel().getQuestionText();
-    }
+    void setAnswerTexts(List<String> texts);
 
-    public void setQuestionText(String questionText) {
-        questionPanel.getQuestionDescriptionPanel().setQuestionText(questionText);
-    }
+    List<Boolean> getCheckedStates();
 
-    public List<String> getAnswerTexts() {
-        return questionPanel.getAnswersPanel().getAnswerTexts();
-    }
+    void setCheckedStates(List<Boolean> checks);
 
-    public void setAnswerTexts(List<String> texts) {
-        questionPanel.getAnswersPanel().setAnswerTexts(texts);
-    }
+    void setAnswersEditable(boolean editable);
 
-    public List<Boolean> getCheckedStates() {
-        return questionPanel.getAnswersPanel().getCheckedStates();
-    }
-
-    public void setCheckedStates(List<Boolean> checks) {
-        questionPanel.getAnswersPanel().setCheckedStates(checks);
-    }
-
-    public void setAnswersEditable(boolean editable) {
-        questionPanel.getAnswersPanel().setCheckboxEditable(editable);
-        questionPanel.getAnswersPanel().setTextFieldsEditable(editable);
-    }
-
-    public QuestionPanel getQuestionPanel() {
-        return questionPanel;
-    }
+    QuestionPanel getQuestionPanel();
 }

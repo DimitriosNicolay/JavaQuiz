@@ -21,19 +21,20 @@ public class QuizPanel extends JPanel {
 
     public QuizPanel() {
         UIStyleUtil.stylePanel(this);
-        setMinimumSize(new Dimension(800, 600));  // overall minimum size
+        setLayout(new BorderLayout());
+        setMinimumSize(new Dimension(800, 600));
 
-        questionDescriptionPanel = new QuestionDescriptionPanel("Quiz Topic");
+        questionDescriptionPanel = new QuestionDescriptionPanel("Quiz");
         questionDescriptionPanel.setEditable(false);
 
         List<String> initialLabels = Arrays.asList("Answer 1:", "Answer 2:", "Answer 3:", "Answer 4:");
         answersPanel = new AnswersPanel(initialLabels);
+
         // Allow users to click checkboxes for selecting answers
         answersPanel.setCheckboxEditable(true);
 
         // Keep answer texts read-only during quiz
         answersPanel.setTextFieldsEditable(false);
-
 
         answerStatusPanel = new AnswerStatusPanel();
 
@@ -54,9 +55,15 @@ public class QuizPanel extends JPanel {
         answerStatusPanel.setMinimumSize(new Dimension(280, 600));
 
         // Create horizontal split pane with custom styled divider
+        JSplitPane splitPane = getJSplitPane(leftPanel);
+
+        add(splitPane, BorderLayout.CENTER);
+    }
+
+    private JSplitPane getJSplitPane(JPanel leftPanel) {
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, answerStatusPanel);
         splitPane.setResizeWeight(0.7);
-        splitPane.setDividerSize(10);  // easier to grab divider
+        splitPane.setDividerSize(7);
         splitPane.setDividerLocation(550); // initial divider location in pixels
         splitPane.setContinuousLayout(true);
         splitPane.setOneTouchExpandable(true);
@@ -84,9 +91,7 @@ public class QuizPanel extends JPanel {
                 };
             }
         });
-
-        setLayout(new BorderLayout());
-        add(splitPane, BorderLayout.CENTER);
+        return splitPane;
     }
 
     // --- Public getter/setter methods for delegation ---

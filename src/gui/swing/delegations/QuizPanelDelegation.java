@@ -4,67 +4,32 @@ import gui.swing.panel.QuizPanel;
 
 import java.util.List;
 
-public class QuizPanelDelegation {
+public interface QuizPanelDelegation {
+    String getTopicName();
 
-    private final QuizPanel quizPanel;
+    void setTopicName(String topicName);
 
-    public QuizPanelDelegation(QuizPanel quizPanel) {
-        this.quizPanel = quizPanel;
-    }
+    String getQuestionName();
 
-    public String getTopicName() {
-        return quizPanel.getTopicName();
-    }
+    void setQuestionName(String questionName);
 
-    public void setTopicName(String topicName) {
-        quizPanel.setTopicName(topicName);
-    }
+    String getQuestionText();
 
-    public String getQuestionName() {
-        return quizPanel.getQuestionName();
-    }
+    void setQuestionText(String questionText);
 
-    public void setQuestionName(String questionName) {
-        quizPanel.setQuestionName(questionName);
-    }
+    List<String> getAnswerTexts();
 
-    public String getQuestionText() {
-        return quizPanel.getQuestionText();
-    }
+    void setAnswerTexts(List<String> texts);
 
-    public void setQuestionText(String questionText) {
-        quizPanel.setQuestionText(questionText);
-    }
+    List<Boolean> getCheckedStates();
 
-    public List<String> getAnswerTexts() {
-        return quizPanel.getAnswerTexts();
-    }
+    void setCheckedStates(List<Boolean> checks);
 
-    public void setAnswerTexts(List<String> texts) {
-        quizPanel.setAnswerTexts(texts);
-    }
+    void setAnswered(boolean correct);
 
-    public List<Boolean> getCheckedStates() {
-        return quizPanel.getCheckedStates();
-    }
+    void setAnswerExplanation(String explanation);
 
-    public void setCheckedStates(List<Boolean> checks) {
-        quizPanel.setCheckedStates(checks);
-    }
+    void setCorrectAnswer(String answer);
 
-    public void setAnswered(boolean correct) {
-        quizPanel.setAnswered(correct);
-    }
-
-    public void setAnswerExplanation(String explanation) {
-        quizPanel.setAnswerExplanation(explanation);
-    }
-
-    public void setCorrectAnswer(String answer) {
-        quizPanel.setCorrectAnswer(answer);
-    }
-
-    public QuizPanel getQuizPanel() {
-        return quizPanel;
-    }
+    QuizPanel getQuizPanel();
 }

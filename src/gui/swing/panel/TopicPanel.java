@@ -1,6 +1,7 @@
 package gui.swing.panel;
 
 import gui.swing.UIStyleUtil;
+import gui.swing.components.ButtonPanel;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -8,8 +9,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
+import java.util.Arrays;
 
 public class TopicPanel extends JPanel {
+    private final ButtonPanel buttonPanel;
     private JList<String> topicList;
     private DefaultListModel<String> listModel;
     private JButton deleteButton;
@@ -31,7 +34,7 @@ public class TopicPanel extends JPanel {
         JScrollPane listScrollPane = new JScrollPane(topicList);
         UIStyleUtil.styleScrollPane(listScrollPane, "Topics");
 
-        // Left panel with details
+        // Left details panel with details
         JPanel detailsPanel = new JPanel();
         detailsPanel.setLayout(new BorderLayout());
         UIStyleUtil.stylePanel(detailsPanel);
@@ -47,41 +50,28 @@ public class TopicPanel extends JPanel {
         detailsPanel.add(titleField, BorderLayout.NORTH);
         detailsPanel.add(descScrollPane, BorderLayout.CENTER);
 
-        // Button panel with flexible spacing
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BorderLayout());
-        UIStyleUtil.stylePanel(buttonPanel);
-        buttonPanel.setBorder(new EmptyBorder(10, 20, 10, 20));
+        // Button panel
 
-        deleteButton = new JButton("Delete Topic");
-        saveButton = new JButton("Save Changes");
-        newButton = new JButton("New Topic");
+        buttonPanel = new ButtonPanel(
+            Arrays.asList("New", "Save", "Delete"),
+            Arrays.asList(
+                ButtonPanel.ButtonType.NORMAL,
+                ButtonPanel.ButtonType.GREEN,
+                ButtonPanel.ButtonType.RED
+            )
+        );
 
-        // Set fixed sizes for buttons
-        Dimension buttonSize = new Dimension(120, 30);
-        deleteButton.setPreferredSize(buttonSize);
-        saveButton.setPreferredSize(buttonSize);
-        newButton.setPreferredSize(buttonSize);
-
-        UIStyleUtil.styleRedButton(deleteButton);
-        UIStyleUtil.styleButton(saveButton);
-        UIStyleUtil.styleGreenButton(newButton);
-
-        // Create center panel for save button with flexible spacing
-        JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setOpaque(false);
-        centerPanel.add(saveButton);
-
-        buttonPanel.add(deleteButton, BorderLayout.WEST);
-        buttonPanel.add(centerPanel, BorderLayout.CENTER);
-        buttonPanel.add(newButton, BorderLayout.EAST);
-
-        detailsPanel.add(buttonPanel, BorderLayout.SOUTH);
+        // create left main Panel
+        JPanel leftMainPanel = new JPanel(new BorderLayout());
+        UIStyleUtil.stylePanel(leftMainPanel);
+        leftMainPanel.add(detailsPanel, BorderLayout.CENTER);
+        leftMainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        leftMainPanel.setMinimumSize(new Dimension(400, 600));
 
         // Add components to main panel with reversed order
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
-                detailsPanel,
+                leftMainPanel,
                 listScrollPane
         );
         splitPane.setResizeWeight(0.7);
