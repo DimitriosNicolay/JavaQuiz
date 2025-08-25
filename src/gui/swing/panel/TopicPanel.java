@@ -1,5 +1,6 @@
 package gui.swing.panel;
 
+import persistence.dto.TopicDTO;
 import gui.swing.UIStyleUtil;
 import gui.swing.components.ButtonPanel;
 
@@ -9,7 +10,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TopicPanel extends JPanel {
     private final ButtonPanel buttonPanel;
@@ -21,12 +24,15 @@ public class TopicPanel extends JPanel {
     private JTextField titleField;
     private JTextArea descriptionArea;
 
+    // Map to link topic titles to TopicDTO objects
+    private Map<String, TopicDTO> topicMap = new HashMap<>();
+
     public TopicPanel() {
         setLayout(new BorderLayout());
         UIStyleUtil.stylePanel(this);
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Right panel with list
+        // Initialize list model and JList
         listModel = new DefaultListModel<>();
         topicList = new JList<>(listModel);
         UIStyleUtil.styleList(topicList);
@@ -34,9 +40,8 @@ public class TopicPanel extends JPanel {
         JScrollPane listScrollPane = new JScrollPane(topicList);
         UIStyleUtil.styleScrollPane(listScrollPane, "Topics");
 
-        // Left details panel with details
-        JPanel detailsPanel = new JPanel();
-        detailsPanel.setLayout(new BorderLayout());
+        // Details panel with title and description fields
+        JPanel detailsPanel = new JPanel(new BorderLayout());
         UIStyleUtil.stylePanel(detailsPanel);
 
         titleField = new JTextField();
@@ -50,25 +55,29 @@ public class TopicPanel extends JPanel {
         detailsPanel.add(titleField, BorderLayout.NORTH);
         detailsPanel.add(descScrollPane, BorderLayout.CENTER);
 
-        // Button panel
-
+        // Initialize ButtonPanel with New, Save, Delete buttons
         buttonPanel = new ButtonPanel(
-            Arrays.asList("New", "Save", "Delete"),
-            Arrays.asList(
-                ButtonPanel.ButtonType.NORMAL,
-                ButtonPanel.ButtonType.GREEN,
-                ButtonPanel.ButtonType.RED
-            )
+                List.of("New", "Save", "Delete"),
+                List.of(
+                        ButtonPanel.ButtonType.NORMAL,
+                        ButtonPanel.ButtonType.GREEN,
+                        ButtonPanel.ButtonType.RED
+                )
         );
 
-        // create left main Panel
+        // Extract buttons for easy access
+        newButton = buttonPanel.getButton("New");
+        saveButton = buttonPanel.getButton("Save");
+        deleteButton = buttonPanel.getButton("Delete");
+
+        // Compose left main panel with details and buttons
         JPanel leftMainPanel = new JPanel(new BorderLayout());
         UIStyleUtil.stylePanel(leftMainPanel);
         leftMainPanel.add(detailsPanel, BorderLayout.CENTER);
         leftMainPanel.add(buttonPanel, BorderLayout.SOUTH);
         leftMainPanel.setMinimumSize(new Dimension(400, 600));
 
-        // Add components to main panel with reversed order
+        // Create and style split pane
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 leftMainPanel,
@@ -78,8 +87,6 @@ public class TopicPanel extends JPanel {
         splitPane.setDividerSize(4);
         splitPane.setBorder(null);
         splitPane.setBackground(UIStyleUtil.BACKGROUND_COLOR);
-
-        // Style the divider
         splitPane.setUI(new BasicSplitPaneUI() {
             public BasicSplitPaneDivider createDefaultDivider() {
                 return new BasicSplitPaneDivider(this) {
@@ -99,5 +106,70 @@ public class TopicPanel extends JPanel {
         });
 
         add(splitPane, BorderLayout.CENTER);
+    }
+
+    // Return the topic list component for adding listeners
+    public JList<String> getTopicList() {
+        return topicList;
+    }
+
+    // Return the Delete button
+    public JButton getDeleteButton() {
+        return deleteButton;
+    }
+
+    // Return the Save button
+    public JButton getSaveButton() {
+        return saveButton;
+    }
+
+    // Return the New button
+    public JButton getNewButton() {
+        return newButton;
+    }
+
+    // Populate the list with topic titles from DTOs and keep map updated
+    public void setTopics(List<TopicDTO> topics) {
+        topicMap.clear();
+        listModel.clear();
+        for (TopicDTO topic : topics) {
+            String title = topic.getTitle();
+            topicMap.put(title, topic);
+            listModel.addElement(title);
+        }
+    }
+
+    // Get the ID of the currently selected topic by mapping the selected title
+    public int getSelectedTopicId() {
+        String selectedTitle = topicList.getSelectedValue();
+        TopicDTO dto = topicMap.get(selectedTitle);
+        return (dto != null) ? dto.getId() : -1;
+    }
+
+    // Fill the details fields from a TopicDTO
+    public void setTopicDetails(TopicDTO topic) {
+        if (topic != null) {
+            titleField.setText(topic.getTitle());
+            descriptionArea.setText(topic.getDescription());
+        }
+    }
+
+    // Create a TopicDTO from the current inputs, including the selected topic's ID if any
+    public TopicDTO getTopicFromInputs() {
+        TopicDTO dto = new TopicDTO();
+        dto.setTitle(titleField.getText());
+        dto.setDescription(descriptionArea.getText());
+        int selectedId = getSelectedTopicId();
+        if (selectedId > 0) {
+            dto.setId(selectedId);
+        }
+        return dto;
+    }
+
+    // Clear all input fields and selection
+    public void clearInputs() {
+        titleField.setText("");
+        descriptionArea.setText("");
+        topicList.clearSelection();
     }
 }

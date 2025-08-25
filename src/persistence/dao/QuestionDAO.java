@@ -1,101 +1,92 @@
 package persistence.dao;
 
 import persistence.DBManager;
+import persistence.dto.QuestionDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionDAO {
-    private DBManager dbManager;
-
-    private final String SQL_INSERT = "INSERT INTO Questions (topic_id, title, description) VALUES (?, ?, ?)";
-    private final String SQL_UPDATE = "UPDATE Questions SET topic_id = ?, title = ?, description = ? WHERE id = ?";
-    private final String SQL_DELETE = "DELETE FROM Questions WHERE id = ?";
-    private final String SQL_SELECT_ALL_BY_TOPIC = "SELECT id, topic_id, title, description FROM Questions WHERE topic_id = ?";
-    private final String SQL_SELECT_BY_ID = "SELECT id, topic_id, title, description FROM Questions WHERE id = ?";
+    private final DBManager dbManager;
 
     public QuestionDAO(DBManager dbManager) {
         this.dbManager = dbManager;
     }
 
-    public boolean insert(int topicId, String title, String description) {
+    public boolean insert(QuestionDTO question) throws SQLException {
+        String sql = "INSERT INTO Questions (topic_id, title, description) VALUES (?, ?, ?)";
         try (Connection conn = dbManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_INSERT)) {
-            ps.setInt(1, topicId);
-            ps.setString(2, title);
-            ps.setString(3, description);
-            return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean update(int id, int topicId, String title, String description) {
-        try (Connection conn = dbManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)) {
-            ps.setInt(1, topicId);
-            ps.setString(2, title);
-            ps.setString(3, description);
-            ps.setInt(4, id);
-            return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean delete(int id) {
-        try (Connection conn = dbManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_DELETE)) {
-            ps.setInt(1, id);
-            return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Each String[] contains id, topic_id, title, description
-    public List<String[]> getAllByTopic(int topicId) {
-        List<String[]> result = new ArrayList<>();
-        try (Connection conn = dbManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_ALL_BY_TOPIC)) {
-            ps.setInt(1, topicId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String[] row = new String[4];
-                    row[0] = String.valueOf(rs.getInt("id"));
-                    row[1] = String.valueOf(rs.getInt("topic_id"));
-                    row[2] = rs.getString("title");
-                    row[3] = rs.getString("description");
-                    result.add(row);
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, question.getTopicId());
+            ps.setString(2, question.getTitle());
+            ps.setString(3, question.getDescription());
+            int affected = ps.executeUpdate();
+            if (affected == 0) return false;
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    question.setId(keys.getInt(1));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return true;
         }
-        return result;
     }
 
-    public String[] getById(int id) {
+    public boolean update(QuestionDTO question) throws SQLException {
+        String sql = "UPDATE Questions SET topic_id = ?, title = ?, description = ? WHERE id = ?";
         try (Connection conn = dbManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_ID)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, question.getTopicId());
+            ps.setString(2, question.getTitle());
+            ps.setString(3, question.getDescription());
+            ps.setInt(4, question.getId());
+            return ps.executeUpdate() == 1;
+        }
+    }
+
+    public boolean delete(int id) throws SQLException {
+        String sql = "DELETE FROM Questions WHERE id = ?";
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() == 1;
+        }
+    }
+
+    public QuestionDTO getById(int id) throws SQLException {
+        String sql = "SELECT id, topic_id, title, description FROM Questions WHERE id = ?";
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new String[]{
-                            String.valueOf(rs.getInt("id")),
-                            String.valueOf(rs.getInt("topic_id")),
+                    return new QuestionDTO(
+                            rs.getInt("id"),
+                            rs.getInt("topic_id"),
                             rs.getString("title"),
-                            rs.getString("description")
-                    };
+                            rs.getString("description"));
+                }
+                return null;
+            }
+        }
+    }
+
+    public List<QuestionDTO> getByTopic(int topicId) throws SQLException {
+        List<QuestionDTO> questions = new ArrayList<>();
+        String sql = "SELECT id, topic_id, title, description FROM Questions WHERE topic_id = ?";
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, topicId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    questions.add(new QuestionDTO(
+                            rs.getInt("id"),
+                            rs.getInt("topic_id"),
+                            rs.getString("title"),
+                            rs.getString("description")));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return null;
+        return questions;
     }
 }

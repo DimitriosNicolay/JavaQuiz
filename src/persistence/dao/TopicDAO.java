@@ -1,95 +1,91 @@
 package persistence.dao;
 
 import persistence.DBManager;
+import persistence.dto.TopicDTO;
+
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TopicDAO {
-    private DBManager dbManager;
-
-    private final String SQL_INSERT = "INSERT INTO Topics (title, description) VALUES (?, ?)";
-    private final String SQL_UPDATE = "UPDATE Topics SET title = ?, description = ? WHERE id = ?";
-    private final String SQL_DELETE = "DELETE FROM Topics WHERE id = ?";
-    private final String SQL_SELECT_ALL = "SELECT id, title, description FROM Topics";
-    private final String SQL_SELECT_BY_ID = "SELECT id, title, description FROM Topics WHERE id = ?";
+    private final DBManager dbManager;
 
     public TopicDAO(DBManager dbManager) {
         this.dbManager = dbManager;
     }
 
-    public boolean insert(String title, String description) {
+    public boolean insert(TopicDTO topic) throws SQLException {
+        String sql = "INSERT INTO Topics (title, description) VALUES (?, ?)";
         try (Connection conn = dbManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_INSERT)) {
-            ps.setString(1, title);
-            ps.setString(2, description);
-            return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, topic.getTitle());
+            ps.setString(2, topic.getDescription());
+            int affected = ps.executeUpdate();
+            if (affected == 0) {
+                return false;
+            }
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    topic.setId(keys.getInt(1)); // set generated id in DTO
+                }
+            }
+            return true;
         }
     }
 
-    public boolean update(int id, String title, String description) {
+    public boolean update(TopicDTO topic) throws SQLException {
+        String sql = "UPDATE Topics SET title = ?, description = ? WHERE id = ?";
         try (Connection conn = dbManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)) {
-            ps.setString(1, title);
-            ps.setString(2, description);
-            ps.setInt(3, id);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, topic.getTitle());
+            ps.setString(2, topic.getDescription());
+            ps.setInt(3, topic.getId());
             return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 
-    public boolean delete(int id) {
+    public boolean delete(int id) throws SQLException {
+        String sql = "DELETE FROM Topics WHERE id = ?";
         try (Connection conn = dbManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_DELETE)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 
-    // Returns a simple result list of array [id, title, description]
-    public List<String[]> getAll() {
-        List<String[]> result = new ArrayList<>();
+    public TopicDTO getById(int id) throws SQLException {
+        String sql = "SELECT id, title, description FROM Topics WHERE id = ?";
         try (Connection conn = dbManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_ALL);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                String[] row = new String[3];
-                row[0] = String.valueOf(rs.getInt("id"));
-                row[1] = rs.getString("title");
-                row[2] = rs.getString("description");
-                result.add(row);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public String[] getById(int id) {
-        try (Connection conn = dbManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_ID)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new String[]{
-                            String.valueOf(rs.getInt("id")),
+                    return new TopicDTO(
+                            rs.getInt("id"),
                             rs.getString("title"),
                             rs.getString("description")
-                    };
+                    );
                 }
+                return null;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return null;
+    }
+
+    public List<TopicDTO> getAll() throws SQLException {
+        List<TopicDTO> topics = new ArrayList<>();
+        String sql = "SELECT id, title, description FROM Topics";
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                topics.add(new TopicDTO(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("description")
+                ));
+            }
+        }
+        return topics;
     }
 }

@@ -15,30 +15,14 @@ public class DBManager {
     private static final String DB_USER = dotenv.get("DB_USER");
     private static final String DB_PASSWORD = dotenv.get("DB_PASSWORD");
 
-    private Connection connection;
+    private final String jdbcUrl;
 
     public DBManager() {
-        try {
-            String jdbcUrl = "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME;
-            connection = DriverManager.getConnection(jdbcUrl, DB_USER, DB_PASSWORD);
-            System.out.println("Database connected successfully.");
-        } catch (SQLException e) {
-            System.err.println("Failed to connect to database: " + e.getMessage());
-        }
+        jdbcUrl = "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME + "?useSSL=false&serverTimezone=UTC";
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public void close() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-                System.out.println("Database connection closed.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Failed to close database connection: " + e.getMessage());
-        }
+    public Connection getConnection() throws SQLException {
+        // Always return a new connection when requested
+        return DriverManager.getConnection(jdbcUrl, DB_USER, DB_PASSWORD);
     }
 }
