@@ -2,9 +2,9 @@ package persistence.dto;
 
 public class QuestionDTO {
     private int id;
-    private int topicId;
-    private String title;
-    private String description;
+    private int topicId;      // maps to topic_id in DB
+    private String title;     // maps to title column (question title)
+    private String description; // maps to description column (question text)
 
     public QuestionDTO() {}
 
@@ -15,17 +15,35 @@ public class QuestionDTO {
         this.description = description;
     }
 
-    // Getters and setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public int getTopicId() { return topicId; }
-    public void setTopicId(int topicId) { this.topicId = topicId; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public int getTopicId() {
+        return topicId;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setTopicId(int topicId) {
+        this.topicId = topicId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
-

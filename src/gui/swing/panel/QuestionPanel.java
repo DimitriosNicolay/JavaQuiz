@@ -2,12 +2,13 @@ package gui.swing.panel;
 
 import gui.swing.UIStyleUtil;
 import gui.swing.components.ButtonPanel;
+import gui.swing.components.DarkComboBox;
 import gui.swing.subpanel.AnswersPanel;
 import gui.swing.subpanel.QuestionListSubpanel;
 import gui.swing.subpanel.QuestionDescriptionPanel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
@@ -20,6 +21,7 @@ public class QuestionPanel extends JPanel {
     private final AnswersPanel answersPanel;
     private final QuestionListSubpanel questionListPanel;
     private final ButtonPanel buttonPanel;
+    private final DarkComboBox topicComboBox;  // Add DarkComboBox here
 
     public QuestionPanel() {
         setLayout(new BorderLayout());
@@ -29,12 +31,10 @@ public class QuestionPanel extends JPanel {
         questionListPanel = new QuestionListSubpanel();
         questionListPanel.setPreferredSize(new Dimension(200, 0));
 
-        questionDescriptionPanel = new QuestionDescriptionPanel("Default Topic");
+        questionDescriptionPanel = new QuestionDescriptionPanel();
 
         List<String> initialAnswerLabels = Arrays.asList("Answer 1:", "Answer 2:", "Answer 3:", "Answer 4:");
         answersPanel = new AnswersPanel(initialAnswerLabels);
-
-        // Make the answer text fields editable and checkboxes enabled here (for editing mode)
         answersPanel.setTextFieldsEditable(true);
         answersPanel.setCheckboxEditable(true);
 
@@ -52,22 +52,21 @@ public class QuestionPanel extends JPanel {
         centerPanel.add(answersPanel, BorderLayout.CENTER);
         centerPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        JSplitPane splitPane = getJSplitPane(centerPanel);
-        add(splitPane, BorderLayout.CENTER);
-    }
+        // Create panel to hold the topic combo box above the question list
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BorderLayout(5,5));
+        UIStyleUtil.stylePanel(rightPanel);
 
-    private JSplitPane getJSplitPane(JPanel centerPanel) {
-        JSplitPane splitPane = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT,
-                centerPanel,
-                questionListPanel
-        );
+        topicComboBox = new DarkComboBox<>();
+        topicComboBox.setPreferredSize(new Dimension(200, 30));
+        rightPanel.add(topicComboBox, BorderLayout.NORTH);
+        rightPanel.add(questionListPanel, BorderLayout.CENTER);
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, centerPanel, rightPanel);
         splitPane.setResizeWeight(0.7);
         splitPane.setDividerSize(8);
         splitPane.setBorder(null);
         splitPane.setBackground(UIStyleUtil.BACKGROUND_COLOR);
-
-        // Style the divider
         splitPane.setUI(new BasicSplitPaneUI() {
             @Override
             public BasicSplitPaneDivider createDefaultDivider() {
@@ -89,10 +88,8 @@ public class QuestionPanel extends JPanel {
                 };
             }
         });
-        return splitPane;
+        add(splitPane, BorderLayout.CENTER);
     }
-
-    // Make all getters public for delegation access
 
     public QuestionDescriptionPanel getQuestionDescriptionPanel() {
         return questionDescriptionPanel;
@@ -108,5 +105,9 @@ public class QuestionPanel extends JPanel {
 
     public ButtonPanel getButtonPanel() {
         return buttonPanel;
+    }
+
+    public DarkComboBox getTopicComboBox() {
+        return topicComboBox;
     }
 }

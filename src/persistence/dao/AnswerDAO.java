@@ -93,4 +93,20 @@ public class AnswerDAO {
         }
         return answers;
     }
+
+    public List<String> getAnswerTitlesByQuestionId(int questionId) throws SQLException {
+        List<String> answerTitles = new ArrayList<>();
+
+        String sql = "SELECT title FROM Answers WHERE question_id = ? ORDER BY id";
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, questionId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    answerTitles.add(rs.getString("title"));
+                }
+            }
+        }
+        return answerTitles;
+    }
 }

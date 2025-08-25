@@ -24,7 +24,7 @@ public class QuizPanel extends JPanel {
         setLayout(new BorderLayout());
         setMinimumSize(new Dimension(800, 600));
 
-        questionDescriptionPanel = new QuestionDescriptionPanel("Quiz");
+        questionDescriptionPanel = new QuestionDescriptionPanel();
         questionDescriptionPanel.setEditable(false);
 
         List<String> initialLabels = Arrays.asList("Answer 1:", "Answer 2:", "Answer 3:", "Answer 4:");
@@ -125,7 +125,7 @@ public class QuizPanel extends JPanel {
     }
 
     public void setAnswerTexts(List<String> texts) {
-        answersPanel.setAnswerTexts(texts);
+        answersPanel.setAnswers(texts);
     }
 
     public List<Boolean> getCheckedStates() {

@@ -22,7 +22,9 @@ public class QuestionDAO {
             ps.setString(2, question.getTitle());
             ps.setString(3, question.getDescription());
             int affected = ps.executeUpdate();
-            if (affected == 0) return false;
+            if (affected == 0) {
+                return false;
+            }
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
                     question.setId(keys.getInt(1));
@@ -54,39 +56,54 @@ public class QuestionDAO {
     }
 
     public QuestionDTO getById(int id) throws SQLException {
-        String sql = "SELECT id, topic_id, title, description FROM Questions WHERE id = ?";
+        String sql = "SELECT * FROM Questions WHERE id = ?";
         try (Connection conn = dbManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new QuestionDTO(
-                            rs.getInt("id"),
-                            rs.getInt("topic_id"),
-                            rs.getString("title"),
-                            rs.getString("description"));
+                    return mapResultSetToQuestionDTO(rs);
                 }
                 return null;
             }
         }
     }
 
-    public List<QuestionDTO> getByTopic(int topicId) throws SQLException {
+    public List<QuestionDTO> getAll() throws SQLException {
         List<QuestionDTO> questions = new ArrayList<>();
-        String sql = "SELECT id, topic_id, title, description FROM Questions WHERE topic_id = ?";
+        String sql = "SELECT * FROM Questions";
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                questions.add(mapResultSetToQuestionDTO(rs));
+            }
+        }
+        return questions;
+    }
+
+    public List<QuestionDTO> getByTopicId(int topicId) throws SQLException {
+        List<QuestionDTO> questions = new ArrayList<>();
+        String sql = "SELECT * FROM Questions WHERE topic_id = ?";
         try (Connection conn = dbManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, topicId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    questions.add(new QuestionDTO(
-                            rs.getInt("id"),
-                            rs.getInt("topic_id"),
-                            rs.getString("title"),
-                            rs.getString("description")));
+                    questions.add(mapResultSetToQuestionDTO(rs));
                 }
             }
         }
         return questions;
+    }
+
+
+    private QuestionDTO mapResultSetToQuestionDTO(ResultSet rs) throws SQLException {
+        QuestionDTO dto = new QuestionDTO();
+        dto.setId(rs.getInt("id"));
+        dto.setTopicId(rs.getInt("topic_id"));
+        dto.setTitle(rs.getString("title"));
+        dto.setDescription(rs.getString("description"));
+        return dto;
     }
 }
