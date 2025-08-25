@@ -1,6 +1,7 @@
 package gui.swing.subpanel;
 
 import persistence.dto.QuestionDTO;
+import gui.swing.UIStyleUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,35 +13,42 @@ public class QuestionDescriptionPanel extends JPanel {
     private JTextField topicNameField;
 
     public QuestionDescriptionPanel() {
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));  // spacing between components
 
+        UIStyleUtil.stylePanel(this);          // style panel with background color
+
+        // Create and style topic field with titled border
         topicNameField = new JTextField(30);
+        UIStyleUtil.styleTextField(topicNameField, "Topic Name");
 
-        JLabel nameLabel = new JLabel("Question Name:");
+        // Create and style question name field with titled border
         questionNameField = new JTextField(30);
+        UIStyleUtil.styleTextField(questionNameField, "Question Name");
 
-        JLabel descriptionLabel = new JLabel("Description:");
+        // Create and style question description area, wrapped in scroll pane with titled border
         questionDescriptionArea = new JTextArea(5, 30);
         questionDescriptionArea.setLineWrap(true);
         questionDescriptionArea.setWrapStyleWord(true);
+        UIStyleUtil.styleTextArea(questionDescriptionArea);
 
-        JPanel namePanel = new JPanel(new BorderLayout());
-        namePanel.add(nameLabel, BorderLayout.NORTH);
-        namePanel.add(questionNameField, BorderLayout.CENTER);
+        JScrollPane descriptionScrollPane = new JScrollPane(questionDescriptionArea);
+        UIStyleUtil.styleScrollPane(descriptionScrollPane, "Description");
 
-        JPanel descriptionPanel = new JPanel(new BorderLayout());
-        descriptionPanel.add(descriptionLabel, BorderLayout.NORTH);
-        descriptionPanel.add(new JScrollPane(questionDescriptionArea), BorderLayout.CENTER);
+        // Organize inputs in vertical box layout with spacing
+        Box contentBox = Box.createVerticalBox();
+        contentBox.add(topicNameField);
+        contentBox.add(Box.createVerticalStrut(10));
+        contentBox.add(questionNameField);
+        contentBox.add(Box.createVerticalStrut(10));
+        contentBox.add(descriptionScrollPane);
 
-        add(namePanel, BorderLayout.NORTH);
-        add(descriptionPanel, BorderLayout.CENTER);
+        add(contentBox, BorderLayout.CENTER);
     }
 
     public QuestionDTO getQuestionFromInputs() {
         QuestionDTO dto = new QuestionDTO();
         dto.setTitle(questionNameField.getText().trim());
         dto.setDescription(questionDescriptionArea.getText().trim());
-        // set topicId if you have input for it, or elsewhere
         return dto;
     }
 
@@ -56,12 +64,13 @@ public class QuestionDescriptionPanel extends JPanel {
     public void setEditable(boolean editable) {
         questionNameField.setEditable(editable);
         questionDescriptionArea.setEditable(editable);
+        topicNameField.setEditable(editable);
     }
-
 
     public void clearInputs() {
         questionNameField.setText("");
         questionDescriptionArea.setText("");
+        topicNameField.setText("");
     }
 
     public String getTopicName() {
@@ -87,6 +96,4 @@ public class QuestionDescriptionPanel extends JPanel {
     public void setQuestionText(String text) {
         questionDescriptionArea.setText(text);
     }
-
-
 }

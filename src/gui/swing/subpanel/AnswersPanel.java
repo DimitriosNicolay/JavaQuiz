@@ -11,6 +11,7 @@ import java.util.List;
 public class AnswersPanel extends JPanel {
 
     private final List<AnswerRow> answerRows = new ArrayList<>();
+    private JCheckBox[] checkBoxes;
 
     public AnswersPanel(List<String> answerLabels) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -51,12 +52,19 @@ public class AnswersPanel extends JPanel {
     }
 
     public void setCheckedStates(List<Boolean> checks) {
-        for (int i = 0; i < answerRows.size(); i++) {
-            if (i < checks.size()) {
-                answerRows.get(i).setChecked(checks.get(i));
-            } else {
-                answerRows.get(i).setChecked(false);
+        if (checks == null || checkBoxes == null) {
+            // If null, uncheck all checkboxes or reset state
+            if (checkBoxes != null) {
+                for (JCheckBox cb : checkBoxes) {
+                    cb.setSelected(false);
+                }
             }
+            return;
+        }
+
+        int min = Math.min(checks.size(), checkBoxes.length);
+        for (int i = 0; i < min; i++) {
+            checkBoxes[i].setSelected(checks.get(i));
         }
     }
 
