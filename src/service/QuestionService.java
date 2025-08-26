@@ -2,7 +2,7 @@ package service;
 
 import persistence.dao.QuestionDAO;
 import persistence.dao.AnswerDAO;
-import persistence.dto.QuestionDTO;
+import service.dto.QuestionDTO;
 
 import java.sql.SQLException;
 import java.util.Collections;

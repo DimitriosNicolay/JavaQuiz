@@ -6,6 +6,7 @@ import gui.swing.components.DarkComboBox;
 import gui.swing.subpanel.AnswersPanel;
 import gui.swing.subpanel.QuestionListSubpanel;
 import gui.swing.subpanel.QuestionDescriptionPanel;
+import service.dto.TopicDTO;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -20,7 +21,6 @@ public class QuestionPanel extends JPanel {
     private final AnswersPanel answersPanel;
     private final QuestionListSubpanel questionListPanel;
     private final ButtonPanel buttonPanel;
-    private final DarkComboBox topicComboBox;
 
     public QuestionPanel() {
         setLayout(new BorderLayout());
@@ -30,6 +30,7 @@ public class QuestionPanel extends JPanel {
         // Initialize subcomponents
         questionListPanel = new QuestionListSubpanel();
         questionListPanel.setPreferredSize(new Dimension(200, 0));
+        questionListPanel.setMinimumSize(new Dimension(150, 0));
 
         questionDescriptionPanel = new QuestionDescriptionPanel();
 
@@ -49,24 +50,17 @@ public class QuestionPanel extends JPanel {
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
         UIStyleUtil.stylePanel(centerPanel);
         centerPanel.setMinimumSize(new Dimension(300, 200));
-        questionListPanel.setMinimumSize(new Dimension(150, 0));
 
         centerPanel.add(questionDescriptionPanel, BorderLayout.NORTH);
         centerPanel.add(answersPanel, BorderLayout.CENTER);
         centerPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Create panel to hold the topic combo box above the question list
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BorderLayout(5,5));
+        // Create right panel to hold the question list (with topic filter)
+        JPanel rightPanel = new JPanel(new BorderLayout(5, 5));
         UIStyleUtil.stylePanel(rightPanel);
+        rightPanel.add(questionListPanel, BorderLayout.CENTER); // Add the question list panel
 
-        // Initialize topic combo box
-        topicComboBox = new DarkComboBox<>();
-        topicComboBox.setPreferredSize(new Dimension(200, 30));
-        rightPanel.add(topicComboBox, BorderLayout.NORTH);
-        rightPanel.add(questionListPanel, BorderLayout.CENTER);
-
-        // Create split pane to separate question list and center panel
+        // Create split pane to separate center panel and question list panel
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, centerPanel, rightPanel);
         splitPane.setResizeWeight(0.7);
         splitPane.setDividerSize(8);
@@ -85,9 +79,9 @@ public class QuestionPanel extends JPanel {
                         g.fillRect(0, 0, getWidth(), getHeight());
                         g.setColor(new Color(80, 80, 80));
                         if (getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
-                            g.fillRect((getWidth() - 8) / 2, 0, 8, getHeight());
+                            g.fillRect((getWidth() - 2) / 2, 0, 2, getHeight());
                         } else {
-                            g.fillRect(0, (getHeight() - 8) / 2, getWidth(), 8);
+                            g.fillRect(0, (getHeight() - 2) / 2, getWidth(), 2);
                         }
                     }
                 };
@@ -113,7 +107,8 @@ public class QuestionPanel extends JPanel {
         return buttonPanel;
     }
 
-    public DarkComboBox getTopicComboBox() {
-        return topicComboBox;
+    // Delegate method to maintain compatibility with existing delegation code
+    public DarkComboBox<TopicDTO> getTopicComboBox() {
+        return questionListPanel.getFilterComboBox();
     }
 }

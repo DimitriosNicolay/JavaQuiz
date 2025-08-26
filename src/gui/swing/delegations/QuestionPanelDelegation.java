@@ -1,8 +1,8 @@
 package gui.swing.delegations;
 
 import gui.swing.panel.QuestionPanel;
-import persistence.dto.QuestionDTO;
-import persistence.dto.TopicDTO;
+import service.dto.QuestionDTO;
+import service.dto.TopicDTO;
 import service.QuestionService;
 import service.TopicService;
 
@@ -16,7 +16,7 @@ public class QuestionPanelDelegation {
 
     private final QuestionPanel questionPanel;
     private final QuestionService questionService;
-    private final TopicService topicService;  // Add topic service
+    private final TopicService topicService;
 
     public QuestionPanelDelegation(QuestionPanel panel, QuestionService questionService, TopicService topicService) {
         this.questionPanel = panel;
@@ -31,14 +31,7 @@ public class QuestionPanelDelegation {
     private void populateTopicComboBox() {
         try {
             List<TopicDTO> topics = topicService.getAllTopics();
-            DefaultComboBoxModel<TopicDTO> model = new DefaultComboBoxModel<>();
-            for (TopicDTO topic : topics) {
-                model.addElement(topic);
-            }
-            questionPanel.getTopicComboBox().setModel(model);
-            if (!topics.isEmpty()) {
-                questionPanel.getTopicComboBox().setSelectedIndex(0); // select first by default
-            }
+            questionPanel.getQuestionListPanel().loadTopics(topics);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(questionPanel, "Failed to load topics: " + e.getMessage());
         }
@@ -61,14 +54,14 @@ public class QuestionPanelDelegation {
         questionPanel.getButtonPanel().getButton("New").addActionListener(e -> clearInputs());
         questionPanel.getButtonPanel().getButton("Delete").addActionListener(e -> deleteQuestion());
 
-        // Topic combo box listener
-        questionPanel.getTopicComboBox().addActionListener(e -> loadQuestions());
+        // Topic filter combo box listener - using the new filter combo box
+        questionPanel.getQuestionListPanel().getFilterComboBox().addActionListener(e -> loadQuestions());
     }
 
     // Load questions based on selected topic
     private void loadQuestions() {
         try {
-            TopicDTO selectedTopic = (TopicDTO) questionPanel.getTopicComboBox().getSelectedItem();
+            TopicDTO selectedTopic = (TopicDTO) questionPanel.getQuestionListPanel().getFilterComboBox().getSelectedItem();
             List<QuestionDTO> questions;
             if (selectedTopic == null) {
                 questions = questionService.getAllQuestions();
@@ -96,13 +89,13 @@ public class QuestionPanelDelegation {
                 questionPanel.getAnswersPanel().setAnswers(answers);
 
                 // Set topic combo box selection according to question topicId
-                TopicDTO selectedTopic = (TopicDTO) questionPanel.getTopicComboBox().getSelectedItem();
+                TopicDTO selectedTopic = (TopicDTO) questionPanel.getQuestionListPanel().getFilterComboBox().getSelectedItem();
                 if (selectedTopic == null || selectedTopic.getId() != question.getTopicId()) {
-                    DefaultComboBoxModel<TopicDTO> model = (DefaultComboBoxModel<TopicDTO>) questionPanel.getTopicComboBox().getModel();
-                    for (int i = 0; i < model.getSize(); i++) {
-                        TopicDTO topic = model.getElementAt(i);
-                        if (topic.getId() == question.getTopicId()) {
-                            questionPanel.getTopicComboBox().setSelectedIndex(i);
+                    JComboBox<TopicDTO> comboBox = questionPanel.getQuestionListPanel().getFilterComboBox();
+                    for (int i = 0; i < comboBox.getItemCount(); i++) {
+                        TopicDTO topic = comboBox.getItemAt(i);
+                        if (topic != null && topic.getId() == question.getTopicId()) {
+                            comboBox.setSelectedIndex(i);
                             break;
                         }
                     }
@@ -135,7 +128,7 @@ public class QuestionPanelDelegation {
     // Collect question data from UI inputs
     private QuestionDTO collectQuestionFromUI() {
         QuestionDTO question = questionPanel.getQuestionDescriptionPanel().getQuestionFromInputs();
-        TopicDTO selectedTopic = (TopicDTO) questionPanel.getTopicComboBox().getSelectedItem();
+        TopicDTO selectedTopic = (TopicDTO) questionPanel.getQuestionListPanel().getFilterComboBox().getSelectedItem();
         if (selectedTopic != null) {
             question.setTopicId(selectedTopic.getId());
         }

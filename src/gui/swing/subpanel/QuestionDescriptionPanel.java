@@ -1,6 +1,6 @@
 package gui.swing.subpanel;
 
-import persistence.dto.QuestionDTO;
+import service.dto.QuestionDTO;
 import gui.swing.UIStyleUtil;
 
 import javax.swing.*;

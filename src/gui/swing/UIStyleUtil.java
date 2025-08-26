@@ -93,4 +93,47 @@ public class UIStyleUtil {
     public static void stylePanel(JPanel panel) {
         panel.setBackground(BACKGROUND_COLOR);
     }
+
+    // Styles JComboBox with dark theme consistent with other components
+    public static void styleComboBox(JComboBox<?> comboBox, String title) {
+        comboBox.setBackground(COMPONENT_COLOR);
+        comboBox.setForeground(TEXT_COLOR);
+        comboBox.setFocusable(true);
+        comboBox.setFont(new Font("SansSerif", Font.PLAIN, 12));
+
+        // Set a flat line border or optional titled border if title provided
+        Border border = BorderFactory.createLineBorder(TEXT_COLOR);
+        if (title != null && !title.isEmpty()) {
+            border = BorderFactory.createTitledBorder(
+                    border,
+                    title,
+                    TitledBorder.LEADING,
+                    TitledBorder.TOP,
+                    new Font("SansSerif", Font.PLAIN, 12),
+                    TEXT_COLOR
+            );
+        }
+        comboBox.setBorder(border);
+
+        // Customize list cell renderer for consistent dropdown list styling
+        comboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list,
+                                                          Object value,
+                                                          int index,
+                                                          boolean isSelected,
+                                                          boolean cellHasFocus) {
+                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8)); // Add padding
+
+                if (value != null && "Please select a topic".equals(value.toString())) {
+                    c.setForeground(new Color(150, 150, 150)); // Lighter gray for prompt
+                } else {
+                    c.setForeground(TEXT_COLOR);
+                }
+                c.setBackground(isSelected ? new Color(80, 80, 80) : COMPONENT_COLOR);
+                return c;
+            }
+        });
+    }
 }

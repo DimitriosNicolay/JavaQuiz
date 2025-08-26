@@ -1,7 +1,7 @@
 package service;
 
 import persistence.dao.TopicDAO;
-import persistence.dto.TopicDTO;
+import service.dto.TopicDTO;
 
 import java.sql.SQLException;
 import java.util.List;

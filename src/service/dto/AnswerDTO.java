@@ -1,4 +1,4 @@
-package persistence.dto;
+package service.dto;
 
 public class AnswerDTO {
     private int id;

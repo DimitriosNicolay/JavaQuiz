@@ -1,7 +1,7 @@
 package gui.swing.delegations;
 
 import gui.swing.panel.QuizPanel;
-import persistence.dto.QuestionDTO;
+import service.dto.QuestionDTO;
 import service.QuizService;
 
 import javax.swing.*;

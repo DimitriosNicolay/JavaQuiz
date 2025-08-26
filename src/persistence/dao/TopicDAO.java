@@ -1,7 +1,7 @@
 package persistence.dao;
 
 import persistence.DBManager;
-import persistence.dto.TopicDTO;
+import service.dto.TopicDTO;
 
 
 import java.sql.*;

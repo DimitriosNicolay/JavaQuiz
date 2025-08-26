@@ -1,6 +1,6 @@
 package gui.swing.delegations;
 
-import persistence.dto.TopicDTO;
+import service.dto.TopicDTO;
 import gui.swing.panel.TopicPanel;
 import service.TopicService;
 

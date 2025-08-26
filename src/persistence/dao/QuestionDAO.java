@@ -1,7 +1,7 @@
 package persistence.dao;
 
 import persistence.DBManager;
-import persistence.dto.QuestionDTO;
+import service.dto.QuestionDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
