@@ -11,6 +11,7 @@ import java.util.List;
 public class AnswersPanel extends JPanel {
 
     private final List<AnswerRow> answerRows = new ArrayList<>();
+    private JCheckBox[] checkBoxes;
 
     public AnswersPanel(List<String> answerLabels) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -40,7 +41,7 @@ public class AnswersPanel extends JPanel {
         return states;
     }
 
-    public void setAnswerTexts(List<String> texts) {
+    public void setAnswers(List<String> texts) {
         for (int i = 0; i < answerRows.size(); i++) {
             if (i < texts.size()) {
                 answerRows.get(i).setAnswerText(texts.get(i));
@@ -51,31 +52,43 @@ public class AnswersPanel extends JPanel {
     }
 
     public void setCheckedStates(List<Boolean> checks) {
-        for (int i = 0; i < answerRows.size(); i++) {
-            if (i < checks.size()) {
-                answerRows.get(i).setChecked(checks.get(i));
-            } else {
-                answerRows.get(i).setChecked(false);
+        if (checks == null || checkBoxes == null) {
+            // If null, uncheck all checkboxes or reset state
+            if (checkBoxes != null) {
+                for (JCheckBox cb : checkBoxes) {
+                    cb.setSelected(false);
+                }
             }
+            return;
+        }
+
+        int min = Math.min(checks.size(), checkBoxes.length);
+        for (int i = 0; i < min; i++) {
+            checkBoxes[i].setSelected(checks.get(i));
         }
     }
 
-    // Allow setting checkboxes editable to true/false for user selection
     public void setCheckboxEditable(boolean editable) {
         for (AnswerRow row : answerRows) {
             row.setCheckboxEditable(editable);
         }
     }
 
-    // Allow setting text fields editable true/false (for question editing vs quiz mode)
     public void setTextFieldsEditable(boolean editable) {
         for (AnswerRow row : answerRows) {
             row.setTextFieldEditable(editable);
         }
     }
 
-    // Optional getter for all answer rows to add listeners, etc.
+    public void clearInputs() {
+        for (AnswerRow row : answerRows) {
+            row.setAnswerText("");
+            row.setChecked(false);
+        }
+    }
+
     public List<AnswerRow> getAnswerRows() {
         return answerRows;
     }
+
 }

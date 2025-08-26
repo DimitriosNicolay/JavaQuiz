@@ -37,4 +37,14 @@ public class ButtonPanel extends JPanel {
     public List<JButton> getButtons() {
         return buttons;
     }
+
+    // Method to get a button by its label text
+    public JButton getButton(String label) {
+        for (JButton btn : buttons) {
+            if (btn.getText().equals(label)) {
+                return btn;
+            }
+        }
+        return null;
+    }
 }

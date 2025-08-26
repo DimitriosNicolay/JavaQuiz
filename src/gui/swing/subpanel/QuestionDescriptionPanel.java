@@ -1,50 +1,84 @@
 package gui.swing.subpanel;
 
+import persistence.dto.QuestionDTO;
 import gui.swing.UIStyleUtil;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class QuestionDescriptionPanel extends JPanel {
-    private JLabel topicNameLabel;
+
     private JTextField questionNameField;
-    private JTextArea questionTextArea;
+    private JTextArea questionDescriptionArea;
+    private JTextField topicNameField;
 
-    public QuestionDescriptionPanel(String initialTopic) {
-        setLayout(new BorderLayout(10, 10));
-        UIStyleUtil.stylePanel(this);
-        setBorder(new EmptyBorder(10, 10, 10, 10));
+    public QuestionDescriptionPanel() {
+        setLayout(new BorderLayout(10, 10));  // spacing between components
 
-        topicNameLabel = new JLabel(initialTopic);
-        topicNameLabel.setForeground(UIStyleUtil.TEXT_COLOR);
-        topicNameLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
-        add(topicNameLabel, BorderLayout.NORTH);
+        UIStyleUtil.stylePanel(this);          // style panel with background color
 
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        UIStyleUtil.stylePanel(centerPanel);
+        // Create and style topic field with titled border
+        topicNameField = new JTextField(30);
+        UIStyleUtil.styleTextField(topicNameField, "Topic Name");
 
-        questionNameField = new JTextField();
+        // Create and style question name field with titled border
+        questionNameField = new JTextField(30);
         UIStyleUtil.styleTextField(questionNameField, "Question Name");
-        centerPanel.add(questionNameField);
-        centerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        questionTextArea = new JTextArea(4, 40);
-        UIStyleUtil.styleTextArea(questionTextArea);
-        JScrollPane scrollPane = new JScrollPane(questionTextArea);
-        UIStyleUtil.styleScrollPane(scrollPane, "Full Question Text");
-        centerPanel.add(scrollPane);
+        // Create and style question description area, wrapped in scroll pane with titled border
+        questionDescriptionArea = new JTextArea(5, 30);
+        questionDescriptionArea.setLineWrap(true);
+        questionDescriptionArea.setWrapStyleWord(true);
+        UIStyleUtil.styleTextArea(questionDescriptionArea);
 
-        add(centerPanel, BorderLayout.CENTER);
+        JScrollPane descriptionScrollPane = new JScrollPane(questionDescriptionArea);
+        UIStyleUtil.styleScrollPane(descriptionScrollPane, "Description");
+
+        // Organize inputs in vertical box layout with spacing
+        Box contentBox = Box.createVerticalBox();
+        contentBox.add(topicNameField);
+        contentBox.add(Box.createVerticalStrut(10));
+        contentBox.add(questionNameField);
+        contentBox.add(Box.createVerticalStrut(10));
+        contentBox.add(descriptionScrollPane);
+
+        add(contentBox, BorderLayout.CENTER);
+    }
+
+    public QuestionDTO getQuestionFromInputs() {
+        QuestionDTO dto = new QuestionDTO();
+        dto.setTitle(questionNameField.getText().trim());
+        dto.setDescription(questionDescriptionArea.getText().trim());
+        return dto;
+    }
+
+    public void setQuestionDetails(QuestionDTO question) {
+        if (question != null) {
+            questionNameField.setText(question.getTitle());
+            questionDescriptionArea.setText(question.getDescription());
+        } else {
+            clearInputs();
+        }
+    }
+
+    public void setEditable(boolean editable) {
+        questionNameField.setEditable(editable);
+        questionDescriptionArea.setEditable(editable);
+        topicNameField.setEditable(editable);
+    }
+
+    public void clearInputs() {
+        questionNameField.setText("");
+        questionDescriptionArea.setText("");
+        topicNameField.setText("");
     }
 
     public String getTopicName() {
-        return topicNameLabel.getText();
+        return topicNameField.getText();
     }
 
     public void setTopicName(String topicName) {
-        topicNameLabel.setText(topicName);
+        topicNameField.setText(topicName);
     }
 
     public String getQuestionName() {
@@ -56,15 +90,10 @@ public class QuestionDescriptionPanel extends JPanel {
     }
 
     public String getQuestionText() {
-        return questionTextArea.getText();
+        return questionDescriptionArea.getText();
     }
 
-    public void setQuestionText(String questionText) {
-        questionTextArea.setText(questionText);
-    }
-
-    public void setEditable(boolean editable) {
-        questionNameField.setEditable(editable);
-        questionTextArea.setEditable(editable);
+    public void setQuestionText(String text) {
+        questionDescriptionArea.setText(text);
     }
 }
