@@ -21,10 +21,12 @@ import java.awt.*;
 
 public class AppFrame extends JFrame {
 
+    // UI Components
     private NavBar navigationBar;
     private JPanel mainPanel;
     private CardLayout cardLayout;
 
+    // Panels
     private TopicPanel topicPanel;
     private QuestionPanel questionPanel;
     private QuizPanel quizPanel;
@@ -37,28 +39,34 @@ public class AppFrame extends JFrame {
     // private StatsPanelDelegation statsDelegation; // For later
 
     public AppFrame() {
+        // Frame settings
         setTitle("Quiz");
         setMinimumSize(new Dimension(800, 600));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        // Layout setup
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
         navigationBar = new NavBar();
 
+        // Adding components to frame
         add(navigationBar, BorderLayout.NORTH);
         add(mainPanel, BorderLayout.CENTER);
 
+        // Initialize panels
         topicPanel = new TopicPanel();
         questionPanel = new QuestionPanel();
         quizPanel = new QuizPanel();
         statsPanel = new StatsPanel();
 
+        // Add panels to main panel with card layout
         mainPanel.add(topicPanel, "topics");
         mainPanel.add(questionPanel, "questions");
         mainPanel.add(quizPanel, "quiz");
         mainPanel.add(statsPanel, "stats");
 
+        // Database Manager
         DBManager dbManager = new DBManager();
 
         // DAOs
@@ -74,7 +82,7 @@ public class AppFrame extends JFrame {
         topicDelegation = new TopicPanelDelegation(topicPanel, topicService);
         questionDelegation = new QuestionPanelDelegation(questionPanel, questionService, topicService);
 
-
+        // Attempt to initialize QuizService with real questions, fallback to empty list on failure
         QuizService quizService;
         try {
             quizService = new QuizService(questionService.getAllQuestions(), answerDAO);

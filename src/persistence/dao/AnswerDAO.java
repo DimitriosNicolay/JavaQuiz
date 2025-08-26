@@ -14,6 +14,7 @@ public class AnswerDAO {
         this.dbManager = dbManager;
     }
 
+    // Insert a new answer
     public boolean insert(AnswerDTO answer) throws SQLException {
         String sql = "INSERT INTO Answers (question_id, title, description, is_correct) VALUES (?, ?, ?, ?)";
         try (Connection conn = dbManager.getConnection();
@@ -33,6 +34,7 @@ public class AnswerDAO {
         }
     }
 
+    // Update an existing answer
     public boolean update(AnswerDTO answer) throws SQLException {
         String sql = "UPDATE Answers SET question_id = ?, title = ?, description = ?, is_correct = ? WHERE id = ?";
         try (Connection conn = dbManager.getConnection();
@@ -46,6 +48,7 @@ public class AnswerDAO {
         }
     }
 
+    // Delete an answer by id
     public boolean delete(int id) throws SQLException {
         String sql = "DELETE FROM Answers WHERE id = ?";
         try (Connection conn = dbManager.getConnection();
@@ -55,6 +58,7 @@ public class AnswerDAO {
         }
     }
 
+    // Get an answer by id
     public AnswerDTO getById(int id) throws SQLException {
         String sql = "SELECT id, question_id, title, description, is_correct FROM Answers WHERE id = ?";
         try (Connection conn = dbManager.getConnection();
@@ -74,6 +78,7 @@ public class AnswerDAO {
         }
     }
 
+    // Get all answers for a specific question
     public List<AnswerDTO> getByQuestion(int questionId) throws SQLException {
         List<AnswerDTO> answers = new ArrayList<>();
         String sql = "SELECT id, question_id, title, description, is_correct FROM Answers WHERE question_id = ?";
@@ -94,6 +99,7 @@ public class AnswerDAO {
         return answers;
     }
 
+    // Get titles of all answers for a specific question
     public List<String> getAnswerTitlesByQuestionId(int questionId) throws SQLException {
         List<String> answerTitles = new ArrayList<>();
 

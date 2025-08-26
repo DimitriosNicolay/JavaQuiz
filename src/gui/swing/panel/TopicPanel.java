@@ -32,7 +32,6 @@ public class TopicPanel extends JPanel {
         UIStyleUtil.stylePanel(this);
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Initialize list model and JList
         listModel = new DefaultListModel<>();
         topicList = new JList<>(listModel);
         UIStyleUtil.styleList(topicList);
@@ -65,7 +64,6 @@ public class TopicPanel extends JPanel {
                 )
         );
 
-        // Extract buttons for easy access
         newButton = buttonPanel.getButton("New");
         saveButton = buttonPanel.getButton("Save");
         deleteButton = buttonPanel.getButton("Delete");
@@ -113,17 +111,15 @@ public class TopicPanel extends JPanel {
         return topicList;
     }
 
-    // Return the Delete button
+    // Return buttons
     public JButton getDeleteButton() {
         return deleteButton;
     }
 
-    // Return the Save button
     public JButton getSaveButton() {
         return saveButton;
     }
 
-    // Return the New button
     public JButton getNewButton() {
         return newButton;
     }

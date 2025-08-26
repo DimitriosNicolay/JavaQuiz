@@ -8,7 +8,6 @@ import gui.swing.subpanel.QuestionListSubpanel;
 import gui.swing.subpanel.QuestionDescriptionPanel;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
@@ -21,28 +20,32 @@ public class QuestionPanel extends JPanel {
     private final AnswersPanel answersPanel;
     private final QuestionListSubpanel questionListPanel;
     private final ButtonPanel buttonPanel;
-    private final DarkComboBox topicComboBox;  // Add DarkComboBox here
+    private final DarkComboBox topicComboBox;
 
     public QuestionPanel() {
         setLayout(new BorderLayout());
         setMinimumSize(new Dimension(600, 400));
         UIStyleUtil.stylePanel(this);
 
+        // Initialize subcomponents
         questionListPanel = new QuestionListSubpanel();
         questionListPanel.setPreferredSize(new Dimension(200, 0));
 
         questionDescriptionPanel = new QuestionDescriptionPanel();
 
+        // Initialize answers panel with 4 answer fields by default
         List<String> initialAnswerLabels = Arrays.asList("Answer 1:", "Answer 2:", "Answer 3:", "Answer 4:");
         answersPanel = new AnswersPanel(initialAnswerLabels);
         answersPanel.setTextFieldsEditable(true);
         answersPanel.setCheckboxEditable(true);
 
+        // Initialize button panel with Delete, Save, and New buttons
         buttonPanel = new ButtonPanel(
                 Arrays.asList("Delete", "Save", "New"),
                 Arrays.asList(ButtonPanel.ButtonType.RED, ButtonPanel.ButtonType.NORMAL, ButtonPanel.ButtonType.GREEN)
         );
 
+        // Create center panel to hold question description, answers, and buttons
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
         UIStyleUtil.stylePanel(centerPanel);
         centerPanel.setMinimumSize(new Dimension(300, 200));
@@ -57,11 +60,13 @@ public class QuestionPanel extends JPanel {
         rightPanel.setLayout(new BorderLayout(5,5));
         UIStyleUtil.stylePanel(rightPanel);
 
+        // Initialize topic combo box
         topicComboBox = new DarkComboBox<>();
         topicComboBox.setPreferredSize(new Dimension(200, 30));
         rightPanel.add(topicComboBox, BorderLayout.NORTH);
         rightPanel.add(questionListPanel, BorderLayout.CENTER);
 
+        // Create split pane to separate question list and center panel
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, centerPanel, rightPanel);
         splitPane.setResizeWeight(0.7);
         splitPane.setDividerSize(8);
@@ -91,6 +96,7 @@ public class QuestionPanel extends JPanel {
         add(splitPane, BorderLayout.CENTER);
     }
 
+    // Getters for subcomponents
     public QuestionDescriptionPanel getQuestionDescriptionPanel() {
         return questionDescriptionPanel;
     }

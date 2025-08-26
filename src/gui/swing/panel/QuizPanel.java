@@ -27,13 +27,12 @@ public class QuizPanel extends JPanel {
         questionDescriptionPanel = new QuestionDescriptionPanel();
         questionDescriptionPanel.setEditable(false);
 
+        // Initialize answers panel with 4 answer fields by default
         List<String> initialLabels = Arrays.asList("Answer 1:", "Answer 2:", "Answer 3:", "Answer 4:");
         answersPanel = new AnswersPanel(initialLabels);
 
-        // Allow users to click checkboxes for selecting answers
+        // Set editable states of the answers panel
         answersPanel.setCheckboxEditable(true);
-
-        // Keep answer texts read-only during quiz
         answersPanel.setTextFieldsEditable(false);
 
         answerStatusPanel = new AnswerStatusPanel();
@@ -60,6 +59,7 @@ public class QuizPanel extends JPanel {
         add(splitPane, BorderLayout.CENTER);
     }
 
+    // Create and return a JSplitPane with custom divider styling
     private JSplitPane getJSplitPane(JPanel leftPanel) {
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, answerStatusPanel);
         splitPane.setResizeWeight(0.7);
@@ -94,7 +94,7 @@ public class QuizPanel extends JPanel {
         return splitPane;
     }
 
-    // --- Public getter/setter methods for delegation ---
+    // Public getter/setter methods for delegation
 
     public String getTopicName() {
         return questionDescriptionPanel.getTopicName();

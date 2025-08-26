@@ -10,11 +10,6 @@ public class DarkComboBox<E> extends JComboBox<E> {
         customize();
     }
 
-    public DarkComboBox(E[] items) {
-        super(items);
-        customize();
-    }
-
     private void customize() {
         setBackground(new Color(45, 45, 45));  // dark background
         setForeground(Color.WHITE);            // white text

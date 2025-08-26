@@ -20,12 +20,14 @@ public class QuizPanelDelegation {
         loadQuestion(currentQuestionIndex);
     }
 
+    // Set up action listeners for buttons
     private void setupListeners() {
         quizPanel.getButtonPanel().getButton("Next").addActionListener(e -> nextQuestion());
         quizPanel.getButtonPanel().getButton("Previous").addActionListener(e -> previousQuestion());
         quizPanel.getButtonPanel().getButton("Submit").addActionListener(e -> submitQuiz());
     }
 
+    // Load question and answers into the panel
     private void loadQuestion(int index) {
         List<QuestionDTO> questions = quizService.getQuestions();
         if (index >= 0 && index < questions.size()) {
@@ -34,7 +36,7 @@ public class QuizPanelDelegation {
             quizPanel.setQuestionName(question.getTitle());        // use getTitle()
             quizPanel.setQuestionText(question.getDescription());   // use getDescription()
 
-            // Assuming your QuizService has a method to fetch answers by question id
+            // Fetch answers from service
             List<String> answerTexts = quizService.getAnswersForQuestion(question.getId());
             quizPanel.setAnswerTexts(answerTexts);
 
@@ -45,6 +47,7 @@ public class QuizPanelDelegation {
         }
     }
 
+    // Navigate to the next question
     private void nextQuestion() {
         if (currentQuestionIndex < quizService.getQuestions().size() - 1) {
             currentQuestionIndex++;
@@ -52,6 +55,7 @@ public class QuizPanelDelegation {
         }
     }
 
+    // Navigate to the previous question
     private void previousQuestion() {
         if (currentQuestionIndex > 0) {
             currentQuestionIndex--;
@@ -60,10 +64,11 @@ public class QuizPanelDelegation {
     }
 
     private void submitQuiz() {
-        // Implement your scoring and submission logic here
+        // TODO: Implement quiz scoring logic
         JOptionPane.showMessageDialog(quizPanel, "Quiz submitted!");
     }
 
+    // Delegation methods to QuizPanel
     public String getTopicName() {
         return quizPanel.getTopicName();
     }

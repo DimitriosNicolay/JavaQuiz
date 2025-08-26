@@ -22,12 +22,12 @@ public class QuestionPanelDelegation {
         this.questionPanel = panel;
         this.questionService = questionService;
         this.topicService = topicService;
-
         populateTopicComboBox();
         setupListeners();
         loadQuestions();
     }
 
+    // Populate the topic combo box with topics from the database
     private void populateTopicComboBox() {
         try {
             List<TopicDTO> topics = topicService.getAllTopics();
@@ -44,6 +44,7 @@ public class QuestionPanelDelegation {
         }
     }
 
+    // Setup listeners for UI components
     private void setupListeners() {
         questionPanel.getQuestionListPanel().getQuestionList()
                 .addListSelectionListener(new ListSelectionListener() {
@@ -55,14 +56,16 @@ public class QuestionPanelDelegation {
                     }
                 });
 
+        // Button listeners
         questionPanel.getButtonPanel().getButton("Save").addActionListener(e -> saveQuestion());
         questionPanel.getButtonPanel().getButton("New").addActionListener(e -> clearInputs());
         questionPanel.getButtonPanel().getButton("Delete").addActionListener(e -> deleteQuestion());
 
-        // Add listener to topic combo box to reload questions when selection changes
+        // Topic combo box listener
         questionPanel.getTopicComboBox().addActionListener(e -> loadQuestions());
     }
 
+    // Load questions based on selected topic
     private void loadQuestions() {
         try {
             TopicDTO selectedTopic = (TopicDTO) questionPanel.getTopicComboBox().getSelectedItem();
@@ -78,6 +81,7 @@ public class QuestionPanelDelegation {
         }
     }
 
+    // Load details of the selected question into the UI
     private void loadSelectedQuestion() {
         int selectedId = questionPanel.getQuestionListPanel().getSelectedQuestionId();
         if (selectedId <= 0) {
@@ -109,6 +113,7 @@ public class QuestionPanelDelegation {
         }
     }
 
+    // Save or update question based on current inputs
     private void saveQuestion() {
         try {
             QuestionDTO question = collectQuestionFromUI();
@@ -127,6 +132,7 @@ public class QuestionPanelDelegation {
         }
     }
 
+    // Collect question data from UI inputs
     private QuestionDTO collectQuestionFromUI() {
         QuestionDTO question = questionPanel.getQuestionDescriptionPanel().getQuestionFromInputs();
         TopicDTO selectedTopic = (TopicDTO) questionPanel.getTopicComboBox().getSelectedItem();
@@ -140,12 +146,14 @@ public class QuestionPanelDelegation {
         return question;
     }
 
+    // Clear all input fields and selections
     private void clearInputs() {
         questionPanel.getQuestionDescriptionPanel().clearInputs();
         questionPanel.getAnswersPanel().clearInputs();
         questionPanel.getQuestionListPanel().clearSelection();
     }
 
+    // Delete the selected question
     private void deleteQuestion() {
         int selectedId = questionPanel.getQuestionListPanel().getSelectedQuestionId();
         if (selectedId <= 0) return;

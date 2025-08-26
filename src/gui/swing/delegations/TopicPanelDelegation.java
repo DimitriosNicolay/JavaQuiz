@@ -22,6 +22,7 @@ public class TopicPanelDelegation {
         loadAllTopics();
     }
 
+    // Action listeners for buttons and list selection
     private void setupListeners() {
         topicPanel.getTopicList().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {

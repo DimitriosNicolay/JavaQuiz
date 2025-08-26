@@ -27,20 +27,20 @@ public class UIStyleUtil {
     // Styles a button with red background
     public static void styleRedButton(JButton button) {
         styleButton(button);
-        button.setBackground(RED_COLOR);  // Red background
+        button.setBackground(RED_COLOR);
     }
 
     // Styles a button with green background
     public static void styleGreenButton(JButton button) {
         styleButton(button);
-        button.setBackground(GREEN_COLOR);  // Green background
+        button.setBackground(GREEN_COLOR);
     }
 
     // Styles a text field with a titled border and dark theme colors
     public static void styleTextField(JTextField field, String title) {
         field.setBackground(COMPONENT_COLOR);
         field.setForeground(TEXT_COLOR);
-        field.setCaretColor(TEXT_COLOR);       // Cursor color
+        field.setCaretColor(TEXT_COLOR);
         field.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(TEXT_COLOR),
                 title,
@@ -55,14 +55,14 @@ public class UIStyleUtil {
     public static void styleTextArea(JTextArea area) {
         area.setBackground(COMPONENT_COLOR);
         area.setForeground(TEXT_COLOR);
-        area.setCaretColor(TEXT_COLOR);        // Cursor color
+        area.setCaretColor(TEXT_COLOR);
     }
 
     // Styles JList with dark theme colors and selection highlighting
     public static void styleList(JList<?> list) {
         list.setBackground(COMPONENT_COLOR);
         list.setForeground(TEXT_COLOR);
-        list.setSelectionBackground(new Color(80, 80, 80));  // Darker selection
+        list.setSelectionBackground(new Color(80, 80, 80));
         list.setSelectionForeground(TEXT_COLOR);
     }
 
