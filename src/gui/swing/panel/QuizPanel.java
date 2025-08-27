@@ -148,7 +148,7 @@ public class QuizPanel extends JPanel {
         answerStatusPanel.setCorrectAnswerText(answer);
     }
 
-    // Accessors for sub-panels (optional)
+    // Accessors for sub-panels
 
     public QuestionDescriptionPanel getQuestionDescriptionPanel() {
         return questionDescriptionPanel;
