@@ -90,7 +90,7 @@ public class AppFrame extends JFrame {
             quizService = new QuizService(new java.util.ArrayList<>(), answerDAO);
             JOptionPane.showMessageDialog(this, "Failed to load questions for quiz: " + e.getMessage());
         }
-        quizDelegation = new QuizPanelDelegation(quizPanel, quizService);
+        quizDelegation = new QuizPanelDelegation(quizPanel, quizService, topicService, questionService);
 
         // TODO: Setup statsDelegation similarly when ready:
         // statsDelegation = new StatsPanelDelegation(statsPanel, statsService);
