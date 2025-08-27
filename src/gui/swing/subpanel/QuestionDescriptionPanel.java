@@ -20,6 +20,7 @@ public class QuestionDescriptionPanel extends JPanel {
         // Create and style topic field with titled border
         topicNameField = new JTextField(30);
         UIStyleUtil.styleTextField(topicNameField, "Topic Name");
+        topicNameField.setEditable(false);
 
         // Create and style question name field with titled border
         questionNameField = new JTextField(30);

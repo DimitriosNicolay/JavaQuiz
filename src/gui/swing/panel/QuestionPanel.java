@@ -109,6 +109,6 @@ public class QuestionPanel extends JPanel {
 
     // Delegate method to maintain compatibility with existing delegation code
     public DarkComboBox<TopicDTO> getTopicComboBox() {
-        return questionListPanel.getFilterComboBox();
+        return questionListPanel.getQuestionComboBox();
     }
 }

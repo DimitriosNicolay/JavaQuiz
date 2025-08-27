@@ -2,6 +2,8 @@ package gui.swing.subpanel;
 
 import gui.swing.components.AnswerRow;
 import gui.swing.UIStyleUtil;
+import gui.swing.components.DarkComboBox;
+import service.dto.TopicDTO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,10 +14,36 @@ public class AnswersPanel extends JPanel {
 
     private final List<AnswerRow> answerRows = new ArrayList<>();
     private JCheckBox[] checkBoxes;
+    private DarkComboBox<TopicDTO> answerComboBox;
 
     public AnswersPanel(List<String> answerLabels) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         UIStyleUtil.stylePanel(this);
+
+        answerComboBox = new DarkComboBox<>();
+        answerComboBox.setPreferredSize(new Dimension(220, 30));
+
+        answerComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                                                          boolean isSelected, boolean cellHasFocus) {
+                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+
+                if (value == null) {
+                    setText("All topics");
+                    c.setForeground(new Color(150, 150, 150));
+                } else if (value instanceof TopicDTO) {
+                    TopicDTO topic = (TopicDTO) value;
+                    setText(topic.getTitle());
+                    c.setForeground(UIStyleUtil.TEXT_COLOR);
+                } else {
+                    c.setForeground(UIStyleUtil.TEXT_COLOR);
+                }
+                c.setBackground(isSelected ? new Color(80, 80, 80) : UIStyleUtil.COMPONENT_COLOR);
+                return c;
+            }
+        });
 
         for (String label : answerLabels) {
             AnswerRow row = new AnswerRow(label);

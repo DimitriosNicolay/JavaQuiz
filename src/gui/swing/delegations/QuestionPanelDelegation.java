@@ -9,6 +9,7 @@ import service.TopicService;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class QuestionPanelDelegation {
     private final QuestionPanel questionPanel;
     private final QuestionService questionService;
     private final TopicService topicService;
+    private boolean isUpdatingComboBox = false; // Flag to prevent listener conflicts
 
     public QuestionPanelDelegation(QuestionPanel panel, QuestionService questionService, TopicService topicService) {
         this.questionPanel = panel;
@@ -54,14 +56,18 @@ public class QuestionPanelDelegation {
         questionPanel.getButtonPanel().getButton("New").addActionListener(e -> clearInputs());
         questionPanel.getButtonPanel().getButton("Delete").addActionListener(e -> deleteQuestion());
 
-        // Topic filter combo box listener - using the new filter combo box
-        questionPanel.getQuestionListPanel().getFilterComboBox().addActionListener(e -> loadQuestions());
+        // Topic filter combo box listener - check flag before executing
+        questionPanel.getQuestionListPanel().getQuestionComboBox().addActionListener(e -> {
+            if (!isUpdatingComboBox) {
+                loadQuestions();
+            }
+        });
     }
 
     // Load questions based on selected topic
     private void loadQuestions() {
         try {
-            TopicDTO selectedTopic = (TopicDTO) questionPanel.getQuestionListPanel().getFilterComboBox().getSelectedItem();
+            TopicDTO selectedTopic = (TopicDTO) questionPanel.getQuestionListPanel().getQuestionComboBox().getSelectedItem();
             List<QuestionDTO> questions;
             if (selectedTopic == null) {
                 questions = questionService.getAllQuestions();
@@ -76,34 +82,52 @@ public class QuestionPanelDelegation {
 
     // Load details of the selected question into the UI
     private void loadSelectedQuestion() {
-        int selectedId = questionPanel.getQuestionListPanel().getSelectedQuestionId();
-        if (selectedId <= 0) {
+        QuestionDTO selectedQuestion = questionPanel.getQuestionListPanel().getQuestionList().getSelectedValue();
+
+        if (selectedQuestion == null) {
             clearInputs();
             return;
         }
+
         try {
-            QuestionDTO question = questionService.getQuestionById(selectedId);
+            // Load complete question details from database
+            QuestionDTO question = questionService.getQuestionById(selectedQuestion.getId());
             if (question != null) {
+                // Set question details in the description panel
                 questionPanel.getQuestionDescriptionPanel().setQuestionDetails(question);
-                List<String> answers = questionService.getAnswersForQuestion(selectedId);
+
+                // Load answers for the question
+                List<String> answers = questionService.getAnswersForQuestion(selectedQuestion.getId());
                 questionPanel.getAnswersPanel().setAnswers(answers);
 
-                // Set topic combo box selection according to question topicId
-                TopicDTO selectedTopic = (TopicDTO) questionPanel.getQuestionListPanel().getFilterComboBox().getSelectedItem();
-                if (selectedTopic == null || selectedTopic.getId() != question.getTopicId()) {
-                    JComboBox<TopicDTO> comboBox = questionPanel.getQuestionListPanel().getFilterComboBox();
-                    for (int i = 0; i < comboBox.getItemCount(); i++) {
-                        TopicDTO topic = comboBox.getItemAt(i);
-                        if (topic != null && topic.getId() == question.getTopicId()) {
-                            comboBox.setSelectedIndex(i);
-                            break;
-                        }
-                    }
+                // Find and set the topic name based on the question's topic ID
+                TopicDTO selectedTopic = findTopicById(question.getTopicId());
+                if (selectedTopic != null) {
+                    questionPanel.getQuestionDescriptionPanel().setTopicName(selectedTopic.getTitle());
+
+                    // Set flag to prevent combo box listener from firing
+                    isUpdatingComboBox = true;
+                    questionPanel.getQuestionListPanel().getQuestionComboBox().setSelectedItem(selectedTopic);
+                    isUpdatingComboBox = false;
+                } else {
+                    questionPanel.getQuestionDescriptionPanel().setTopicName("");
                 }
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(questionPanel, "Failed to load question details: " + e.getMessage());
         }
+    }
+
+    // Helper method to find topic by ID from the combo box items
+    private TopicDTO findTopicById(int topicId) {
+        JComboBox<TopicDTO> comboBox = questionPanel.getQuestionListPanel().getQuestionComboBox();
+        for (int i = 0; i < comboBox.getItemCount(); i++) {
+            TopicDTO topic = comboBox.getItemAt(i);
+            if (topic != null && topic.getId() == topicId) {
+                return topic;
+            }
+        }
+        return null;
     }
 
     // Save or update question based on current inputs
@@ -128,7 +152,7 @@ public class QuestionPanelDelegation {
     // Collect question data from UI inputs
     private QuestionDTO collectQuestionFromUI() {
         QuestionDTO question = questionPanel.getQuestionDescriptionPanel().getQuestionFromInputs();
-        TopicDTO selectedTopic = (TopicDTO) questionPanel.getQuestionListPanel().getFilterComboBox().getSelectedItem();
+        TopicDTO selectedTopic = (TopicDTO) questionPanel.getQuestionListPanel().getQuestionComboBox().getSelectedItem();
         if (selectedTopic != null) {
             question.setTopicId(selectedTopic.getId());
         }
@@ -144,6 +168,11 @@ public class QuestionPanelDelegation {
         questionPanel.getQuestionDescriptionPanel().clearInputs();
         questionPanel.getAnswersPanel().clearInputs();
         questionPanel.getQuestionListPanel().clearSelection();
+
+        // Set flag to prevent combo box listener from firing
+        isUpdatingComboBox = true;
+        questionPanel.getQuestionListPanel().getQuestionComboBox().setSelectedIndex(0); // Reset to "Please select a topic"
+        isUpdatingComboBox = false;
     }
 
     // Delete the selected question
