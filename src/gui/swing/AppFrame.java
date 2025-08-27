@@ -92,6 +92,9 @@ public class AppFrame extends JFrame {
         }
         quizDelegation = new QuizPanelDelegation(quizPanel, quizService, topicService, questionService);
 
+        topicDelegation.setQuestionPanelDelegation(questionDelegation);
+        topicDelegation.setQuizPanelDelegation(quizDelegation);
+
         // TODO: Setup statsDelegation similarly when ready:
         // statsDelegation = new StatsPanelDelegation(statsPanel, statsService);
 

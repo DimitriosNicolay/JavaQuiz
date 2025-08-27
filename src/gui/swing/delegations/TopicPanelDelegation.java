@@ -4,6 +4,7 @@ import service.dto.TopicDTO;
 import gui.swing.panel.TopicPanel;
 import service.TopicService;
 
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -15,11 +16,22 @@ public class TopicPanelDelegation {
     private final TopicPanel topicPanel;
     private final TopicService topicService;
 
+    private QuestionPanelDelegation questionPanelDelegation;
+    private QuizPanelDelegation quizPanelDelegation;
+
     public TopicPanelDelegation(TopicPanel panel, TopicService service) {
         this.topicPanel = panel;
         this.topicService = service;
         setupListeners();
         loadAllTopics();
+    }
+
+    public void setQuestionPanelDelegation(QuestionPanelDelegation delegation) {
+        this.questionPanelDelegation = delegation;
+    }
+
+    public void setQuizPanelDelegation(QuizPanelDelegation delegation) {
+        this.quizPanelDelegation = delegation;
     }
 
     // Action listeners for buttons and list selection
@@ -69,6 +81,14 @@ public class TopicPanelDelegation {
                     JOptionPane.showMessageDialog(topicPanel, "Topic deleted successfully.");
                     loadAllTopics();
                     topicPanel.clearInputs();
+
+                    // ADD THESE LINES HERE:
+                    if (questionPanelDelegation != null) {
+                        questionPanelDelegation.refreshTopicComboBox();
+                    }
+                    if (quizPanelDelegation != null) {
+                        quizPanelDelegation.refreshTopicComboBox();
+                    }
                 }
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(topicPanel, "Failed to delete topic: " + e.getMessage());
@@ -84,6 +104,14 @@ public class TopicPanelDelegation {
                 JOptionPane.showMessageDialog(topicPanel, "Topic saved successfully.");
                 loadAllTopics();
                 topicPanel.clearInputs();
+
+                // ADD THESE LINES HERE:
+                if (questionPanelDelegation != null) {
+                    questionPanelDelegation.refreshTopicComboBox();
+                }
+                if (quizPanelDelegation != null) {
+                    quizPanelDelegation.refreshTopicComboBox();
+                }
             } else {
                 JOptionPane.showMessageDialog(topicPanel, "Failed to save topic.");
             }

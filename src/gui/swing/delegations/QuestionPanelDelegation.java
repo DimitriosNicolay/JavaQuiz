@@ -39,6 +39,16 @@ public class QuestionPanelDelegation {
         }
     }
 
+    public void refreshTopicComboBox() {
+        try {
+            List<TopicDTO> topics = topicService.getAllTopics();
+            questionPanel.getQuestionListPanel().loadTopics(topics);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(questionPanel, "Failed to refresh topics: " + e.getMessage());
+        }
+    }
+
+
     // Setup listeners for UI components
     private void setupListeners() {
         questionPanel.getQuestionListPanel().getQuestionList()
